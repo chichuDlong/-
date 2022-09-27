@@ -81,6 +81,43 @@ public:
         }
     }
 
+    void heapSort1() {
+        buildHeap(data); 
+        for (int i = data.n - 1; i >= 0; i--) {
+            //堆顶与末尾结点值交换
+            swap(data, i, 0);
+            //i不断在砍断
+            heapify(data, 0, i);
+        }
+    }
+
+    void buildHeap(FieldI& data) {
+        int lastNode = data.n - 1;
+        //最后一个结点的父节点 下标，即最后一个非叶子结点
+        int parent = (lastNode - 1) / 2;       
+        //针对最后一个父节点的 及其前面的父节点进行建堆
+        for (int i = parent; i >= 0; i--) 
+            heapify(data, i,  data.n);
+    }
+
+    void heapify(FieldI& data, int i, int n) {
+        if (i >= n) return;
+        //左子结点
+        int cl = i * 2 + 1;
+        //右子结点
+        int cr = i * 2 + 2;
+        //假设最大值坐标是根结点，获取左右子结点的最大值
+        int max = i;
+        if (cl < n && data[cl] > data[max]) max = cl;
+        if (cr < n && data[cr] > data[max]) max = cr;
+        if (max != i) {
+            //将左右子树的最大值赋给父结点
+            swap(data, max, i);
+            //较小的值，被赋给左子树或右子树，则左子树或右子树 需要重新建堆 
+            heapify(data, max, n);
+        }
+    }
+
     void swap(FieldI& data, int i, int j) {
         int tmp = data[i];
         data[i] = data[j];
@@ -106,9 +143,19 @@ int main(int argc, char* argv[]) {
     heap.heapSort();
     auto timeE = chrono::high_resolution_clock::now();
     chrono::duration<double> timeDelta = timeE - timeS;
-    cout << endl << "After sort:" << timeDelta.count() <<" s" <<endl;
+    cout << endl << "After sort: " << timeDelta.count() <<" s" <<endl;
     heap.dataShow();
     cout << endl;
     
+    cout << "===============================" <<endl;
+    heap.dataGeneration();
+    cout << endl << "Before sort:" << endl;
+    heap.dataShow();
+    timeS = chrono::high_resolution_clock::now();
+    heap.heapSort1();
+    timeE = chrono::high_resolution_clock::now();
+    timeDelta = timeE - timeS;
+    cout << endl << "After sort1: " << timeDelta.count() <<" s" <<endl;
+    heap.dataShow();
     return 0;
 }
