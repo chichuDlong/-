@@ -102,12 +102,12 @@ public:
 
     void heapify(FieldI& data, int i, int n) {
         if (i >= n) return;
+        //假设最大值坐标是根结点，获取左右子结点的最大值
+        int max = i;
         //左子结点
         int cl = i * 2 + 1;
         //右子结点
-        int cr = i * 2 + 2;
-        //假设最大值坐标是根结点，获取左右子结点的最大值
-        int max = i;
+        int cr = i * 2 + 2;        
         if (cl < n && data[cl] > data[max]) max = cl;
         if (cr < n && data[cr] > data[max]) max = cr;
         if (max != i) {
