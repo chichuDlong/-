@@ -54,6 +54,7 @@ public:
     }
 
     void mergeSort1(Field_<T>& data) {
+        if(data.n < 2) return;
         // int size = 1, low = 0, mid = 0, high = 0;
         // while(size < data.n) {
         //     low = 0;
