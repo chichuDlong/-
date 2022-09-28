@@ -199,7 +199,6 @@ int main(int argc, char* argv[]) {
     sortAlgorithm<int> solver;
     Functions::testCorrect<int>(solver, num);
 
-
     FieldI data(num);
     data = Functions::dataGeneration<int>(data);
     cout << "Before sort:" << endl;

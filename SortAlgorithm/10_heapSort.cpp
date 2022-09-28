@@ -3,6 +3,7 @@
 #include <random>
 #include <chrono>
 #include <vector>
+#include <algorithm>
 using namespace std;;
 
 template<typename T>
@@ -16,6 +17,10 @@ public:
         if (data == nullptr) return;
         delete[] data;
         data = nullptr;
+    }
+    Field_(const Field_& other):Field_{other.n} {
+        for(int i = 0; i < n; i++)
+            data[i] = other(i);
     }
     Field_& operator=(double s) {
         for (int i = 0; i < n; i++)
@@ -37,20 +42,10 @@ public:
 using FieldI = Field_<int>;
 using FieldD = Field_<double>;
 
-class Heap {
+template<typename T>
+class sortAlgorithm {
 public:
-    Heap(int n) : data(n), gen(std::random_device()()), rnd(-100, 10000) {}
-    void dataGeneration() {
-        for (int i = 0; i < data.n; i++)
-            data[i] = rnd(gen);
-    }
-
-    void dataShow() {
-        for (int i = 0; i < data.n; i++)
-            cout << data(i) << ((i + 1) % 15 ? ' ' : '\n');
-    }
-
-    void heapSort() {
+    void heapSort(Field_<T>& data) {
         if(data.n <= 1) return;
         // 初始化，i从最后一个父节点开始调整
         for (int i = data.n / 2 - 1; i >= 0; i--)
@@ -62,7 +57,7 @@ public:
         }
     }
 
-    void maxHeapify(FieldI& data, int start, int end) {
+    void maxHeapify(Field_<T>& data, int start, int end) {
         // 建立父节点索引和子节点索引
         int dad = start;
         int son = dad * 2 + 1;
@@ -81,7 +76,7 @@ public:
         }
     }
 
-    void heapSort1() {
+    void heapSort1(Field_<T>& data) {
         buildHeap(data); 
         for (int i = data.n - 1; i >= 0; i--) {
             //堆顶与末尾结点值交换
@@ -91,7 +86,7 @@ public:
         }
     }
 
-    void buildHeap(FieldI& data) {
+    void buildHeap(Field_<T>& data) {
         int lastNode = data.n - 1;
         //最后一个结点的父节点 下标，即最后一个非叶子结点
         int parent = (lastNode - 1) / 2;       
@@ -100,7 +95,7 @@ public:
             heapify(data, i,  data.n);
     }
 
-    void heapify(FieldI& data, int i, int n) {
+    void heapify(Field_<T>& data, int i, int n) {
         if (i >= n) return;
         //假设最大值坐标是根结点，获取左右子结点的最大值
         int max = i;
@@ -118,44 +113,111 @@ public:
         }
     }
 
-    void swap(FieldI& data, int i, int j) {
-        int tmp = data[i];
-        data[i] = data[j];
-        data[j] = tmp;
+    void swap(Field_<T>& data, int ix, int jx) {
+        T tmp = data[ix];
+        data[ix] = data[jx];
+        data[jx] = tmp;
     }
-
-    FieldI data;
-protected:
-    std::mt19937 gen;
-    std::uniform_int_distribution<int> rnd;
 };
 
+namespace Functions {
+    template<typename T>
+    Field_<T>& dataGeneration(Field_<T>& data) {
+        std::mt19937 gen(std::random_device{} ());
+        std::uniform_int_distribution<T> rnd(-1000, 1000);
+        for (int i = 0; i < data.n; i++)
+                data[i] = rnd(gen);
+        return data;
+    }
+
+    template<typename T>
+    void dataShow(Field_<T>& data) {
+        for (int i = 0; i < data.n; i++)
+            cout << data(i) << ((i + 1) % 15 ? ' ' : '\n');
+    }
+
+    template<typename T>
+    bool isEqual(Field_<T>& arr1, Field_<T>& arr2) {
+        bool equal = true;
+        for(int i = 0; i < arr1.n; i++)
+            if(arr1[i] != arr2[i]) {
+                equal = false;
+                break;
+            }
+        return equal;
+    }
+
+    template<typename T>
+    void testCorrect(sortAlgorithm<T>& solver, int num) {
+        Field_<T> data(num);
+
+        int testTime = 30000;
+        bool succed = true;
+        for(int it = 0; it < testTime; it++) {
+            FieldI arr1 = dataGeneration(data);
+            FieldI arr2 = arr1, arr3 = arr1;
+            // before sort
+            // cout << "Before Sort" << endl;
+            // cout << "【arr1】" << endl;
+            // dataShow(arr1);
+            // cout << endl << "【arr2】" << endl;
+            // dataShow(arr2);
+            // cout << endl << "【arr3】" << endl;
+            // dataShow(arr3);
+            
+            // sort
+            solver.heapSort(arr1);
+            sort(arr2.data, arr2.data + arr2.n);
+            if(!isEqual(arr1, arr2)) {
+                succed = false;
+                break;
+            }
+            
+            // after sort
+            // cout << endl << endl << "After Sort" << endl;
+            // cout << "【arr1】" << endl;
+            // dataShow(arr1);
+            // cout << endl << "【arr2】" << endl;
+            // dataShow(arr2);
+            // cout << endl << "【arr3】" << endl;
+            // dataShow(arr3);
+        }
+        cout << endl << (succed ? "Sort algorithm correct!!" : "So sorry, you failed!!") << endl;
+    }
+};
+
+/*=======================================================*/
 int main(int argc, char* argv[]) {
     int num = 20;
     if(argc > 1)
         num = atoi(argv[1]);
-    Heap heap(num);
-    heap.dataGeneration();
+    
+    sortAlgorithm<int> solver;
+    Functions::testCorrect<int>(solver, num);
+    
+    FieldI data(num);
+    data = Functions::dataGeneration<int>(data);
     cout << "Before sort:" << endl;
-    heap.dataShow();
+    Functions::dataShow(data);
     
     auto timeS = chrono::high_resolution_clock::now();
-    heap.heapSort();
+    solver.heapSort(data);
     auto timeE = chrono::high_resolution_clock::now();
     chrono::duration<double> timeDelta = timeE - timeS;
     cout << endl << "After sort: " << timeDelta.count() <<" s" <<endl;
-    heap.dataShow();
+    Functions::dataShow(data);
     cout << endl;
     
     cout << "===============================" <<endl;
-    heap.dataGeneration();
+    data = Functions::dataGeneration<int>(data);
     cout << endl << "Before sort:" << endl;
-    heap.dataShow();
+    Functions::dataShow(data);
     timeS = chrono::high_resolution_clock::now();
-    heap.heapSort1();
+    solver.heapSort1(data);
     timeE = chrono::high_resolution_clock::now();
     timeDelta = timeE - timeS;
     cout << endl << "After sort1: " << timeDelta.count() <<" s" <<endl;
-    heap.dataShow();
+    Functions::dataShow(data);
+    cout << endl;
     return 0;
 }
