@@ -90,12 +90,6 @@ public:
         for(int ix = 0; ix < tmp.n; ix++)
             data[front+ix] = tmp[ix];
     }
-    
-    void dataExchange(FieldI& data, int ix, int jx) {
-        int tmp = data[ix];
-        data[ix] = data[jx];
-        data[jx] = tmp;
-    }
 };
 
 namespace Functions {
