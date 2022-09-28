@@ -45,6 +45,7 @@ template<typename T>
 class sortAlgorithm {
 public:
     void bubbleSort(Field_<T>& data) {
+        if(data.n < 2) return;
         for (int i = 0; i < data.n - 1; i++) {
             for (int j = 1; j < data.n - i; j++)
                 if(data[j-1] > data[j])
@@ -53,6 +54,7 @@ public:
     }
 
     void bubbleSort1(Field_<T>& data) {
+        if(data.n < 2) return;
         for(int i = 0; i < data.n - 1; i++) {
             bool exchanged = false;
             for(int j = 0; j < data.n - 1 - i; j++) {
@@ -67,6 +69,7 @@ public:
     }
 
     void bubbleSort2(Field_<T>& data) {
+        if(data.n < 2) return;
         int lastLoc = data.n;
         int tmpPos = 0;
         for(int i = 0; i < data.n - 1; i++) {
@@ -85,6 +88,7 @@ public:
     }
 
     void bubbleSort3(Field_<T>& data) {
+        if(data.n < 2) return;
         int leftLasChangeIx = 0;
         int rightLastChangIx = data.n - 1;
         for (int i = 0; i < data.n / 2; i++) {
