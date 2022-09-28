@@ -202,43 +202,43 @@ int main(int argc, char* argv[]) {
     Functions::dataShow(data);
     
     auto timeS = chrono::high_resolution_clock::now();
-    bubble.bubbleSort();
+    solver.bubbleSort(data);
     auto timeE = chrono::high_resolution_clock::now();
     chrono::duration<double> timeDelta = timeE - timeS;
-    cout << endl << "After sort:" << timeDelta.count() <<" s" <<endl;
-    bubble.dataShow();
-    cout << "===============================" <<endl;
+    cout << endl << "After sort: " << timeDelta.count() <<" s" <<endl;
+    Functions::dataShow(data);
+    cout << endl << "===============================" <<endl;
 
     data = Functions::dataGeneration<int>(data);
     cout << endl << "Before sort:" << endl;
-    bubble.dataShow();
+    Functions::dataShow(data);
     timeS = chrono::high_resolution_clock::now();
-    bubble.bubbleSort1();
+    solver.bubbleSort1(data);
     timeE = chrono::high_resolution_clock::now();
     timeDelta = timeE - timeS;
-    cout << endl << "After sort2:" << timeDelta.count() <<" s" <<endl;
-    bubble.dataShow();
-    cout << "===============================" <<endl;
+    cout << endl << "After sort2: " << timeDelta.count() <<" s" <<endl;
+    Functions::dataShow(data);
+    cout << endl << "===============================" <<endl;
 
     data = Functions::dataGeneration<int>(data);
     cout << endl << "Before sort:" << endl;
-    bubble.dataShow();
+    Functions::dataShow(data);
     timeS = chrono::high_resolution_clock::now();
-    bubble.bubbleSort2();
+    solver.bubbleSort2(data);
     timeE = chrono::high_resolution_clock::now();
     timeDelta = timeE - timeS;
-    cout << endl << "After sort3:" << timeDelta.count() <<" s" <<endl;
-    bubble.dataShow();
-    cout << "===============================" <<endl;
+    cout << endl << "After sort3: " << timeDelta.count() <<" s" <<endl;
+    Functions::dataShow(data);
+    cout << endl << "===============================" <<endl;
 
     data = Functions::dataGeneration<int>(data);
     cout << endl << "Before sort:" << endl;
-    bubble.dataShow();
+    Functions::dataShow(data);
     timeS = chrono::high_resolution_clock::now();
-    bubble.bubbleSort3();
+    solver.bubbleSort3(data);
     timeE = chrono::high_resolution_clock::now();
     timeDelta = timeE - timeS;
-    cout << endl << "After sort4:" << timeDelta.count() <<" s" <<endl;
-    bubble.dataShow();
+    cout << endl << "After sort4: " << timeDelta.count() <<" s" <<endl;
+    Functions::dataShow(data);
     return 0;
 }
