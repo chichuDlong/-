@@ -80,7 +80,7 @@ public:
     }
 
     void merge(Field_<T>& data, int front, int mid, int end) {
-        FieldI tmp(end - front + 1);
+        Field_<T> tmp(end - front + 1);
         int i = front, j = mid + 1, k = 0;
         while(i <= mid && j <= end)
             tmp[k++] = data[i] <= data[j] ? data[i++] : data[j++];
