@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <ios>
 #include <iostream>
 #include <random>
 #include <chrono>
@@ -87,10 +88,32 @@ public:
         return low;
     }
 
-    void swap(Field_<T>& data, int& ix, int& jx) {
+    void swap(Field_<T>& data, int ix, int jx) {
         T tmp = data[ix];
         data[ix] = data[jx];
         data[jx] = tmp;
+    }
+
+    void quickSort1(Field_<T>& data, int L, int R) {
+        if (L < R) {
+            int index = rand() % (R - L + 1) + L;
+            swap(data, index, R);
+            vector<int> p = partition1(data, L, R);
+            quickSort1(data, L, p[0] - 1);
+            quickSort1(data, p[1] + 1, R);
+        }
+    }
+
+    vector<int> partition1(Field_<T>& data, int L, int R) {
+        int less =L - 1; // < 区右边界
+        int more = R;    // > 区左边界
+        while(L < more) {
+            if (data[L] < data[R]) swap(data, ++less, L++);
+            else if (data[L] > data[R]) swap(data, --more, L);
+            else L++;
+        }
+        swap(data, more, R);
+        return {less + 1, more};
     }
 };
 
@@ -125,7 +148,7 @@ namespace Functions {
     void testCorrect(sortAlgorithm<T>& solver, int num) {
         Field_<T> data(num);
 
-        int testTime = 300000;
+        int testTime = 200000;
         bool succed = true;
         for(int it = 0; it < testTime; it++) {
             FieldI arr1 = dataGeneration(data);
@@ -140,8 +163,8 @@ namespace Functions {
             // dataShow(arr3);
             
             // sort
-            //solver.quickSort(arr1, 0, arr1.n - 1);
-            solver.dualQuickSort(arr1, 0, arr1.n - 1);
+            solver.quickSort1(arr1, 0, arr1.n - 1);
+            //solver.dualQuickSort(arr1, 0, arr1.n - 1);
             sort(arr2.data, arr2.data + arr2.n);
             if(!isEqual(arr1, arr2)) {
                 succed = false;
@@ -179,11 +202,10 @@ int main(int argc, char* argv[]) {
     solver.quickSort(data, 0, data.n - 1);
     auto timeE = chrono::high_resolution_clock::now();
     chrono::duration<double> timeDelta = timeE - timeS;
-    cout << endl << "After sort:" << timeDelta.count() <<" s" <<endl;
+    cout << endl << "After sort: " << timeDelta.count() <<" s" <<endl;
     Functions::dataShow(data);
-    cout << endl;
 
-    cout << "===============================" <<endl;
+    cout << endl << "===============================" <<endl;
     data = Functions::dataGeneration<int>(data);
     cout << endl << "Before sort:" << endl;
     Functions::dataShow(data);
@@ -191,7 +213,18 @@ int main(int argc, char* argv[]) {
     solver.dualQuickSort(data, 0, data.n - 1);
     timeE = chrono::high_resolution_clock::now();
     timeDelta = timeE - timeS;
-    cout << endl << "After sort1:" << timeDelta.count() <<" s" <<endl;
+    cout << endl << "After sort1: " << timeDelta.count() <<" s" <<endl;
+    Functions::dataShow(data);
+
+    cout << endl << "===============================" <<endl;
+    data = Functions::dataGeneration<int>(data);
+    cout << endl << "Before sort:" << endl;
+    Functions::dataShow(data);
+    timeS = chrono::high_resolution_clock::now();
+    solver.quickSort1(data, 0, data.n - 1);
+    timeE = chrono::high_resolution_clock::now();
+    timeDelta = timeE - timeS;
+    cout << endl << "After sort1: " << timeDelta.count() <<" s" <<endl;
     Functions::dataShow(data);
     cout << endl;
     return 0;
